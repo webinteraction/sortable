@@ -43,6 +43,7 @@ export class Sortable {
     document.addEventListener('dragstart', e => this.start(e))
     document.addEventListener('dragover', e => this.over(e))
     document.addEventListener('dragend', e => this.end(e))
+    document.addEventListener('keydown', e => this.keydown(e))
   }
 
   /**
@@ -148,6 +149,51 @@ export class Sortable {
 
     // Not found
     return 0
+  }
+
+  /**
+   * Keydown listener
+   * @param {KeyboardEvent} e - Keydown event
+   */
+  keydown (e) {
+    // Not a [data-sortable]
+    if (!e.target.matches(`[${this.config.attr}]`)) return
+
+    // Grab/drop on spacebar
+    if (e.key === ' ') {
+      e.preventDefault()
+
+      // Grab
+      if (!this.state.draggingElement) this.start(e)
+
+      // Drop
+      else this.end(e)
+    }
+
+    // Sort on up/down arrows
+    else if (this.state.draggingElement && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) {
+      e.preventDefault()
+
+      // Get target element
+      const target = e.target[e.key === 'ArrowUp' ? 'previousElementSibling' : 'nextElementSibling']
+
+      // Sort if target is found
+      if (target) this.sort(target)
+
+      // Focus on new dragging element
+      this.state.draggingElement.focus()
+    }
+
+    // Navigate on up/down arrows
+    else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+      e.preventDefault()
+
+      // Get next focusable
+      const focusable = e.target[e.key === 'ArrowUp' ? 'previousElementSibling' : 'nextElementSibling']
+
+      // Focus if focusable is found
+      if (focusable) focusable.focus()
+    }
   }
 }
 
