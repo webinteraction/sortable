@@ -1,0 +1,15 @@
+{
+  "name": "sortable",
+  "version": "1.0.0",
+  "description": "A simple sortable drag and drop component.",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "parcel src/index.html --open"
+  },
+  "author": "@kyleschaeffer",
+  "license": "MIT",
+  "dependencies": {
+    "parcel": "^1.12.3",
+    "sass": "^1.18.0"
+  }
+}
