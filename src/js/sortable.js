@@ -10,6 +10,7 @@ export class Sortable {
      * @type {Options}
      */
     this.config = Object.assign({
+      assistiveText: '.assistive',
       attr: 'data-sortable',
       draggingClass: 'dragging',
       draggingElementClass: 'active-drag',
@@ -33,6 +34,7 @@ export class Sortable {
      * @type {State}
      */
     this.state = {
+      assistiveText: null,
       draggingElement: null,
       draggingIndex: undefined,
       sortableContainer: null,
@@ -67,9 +69,15 @@ export class Sortable {
     // Get sortable container
     this.state.sortableContainer = e.target.closest(this.config.sortableContainer)
 
+    // Get assistive text <span>
+    this.state.assistiveText = this.state.sortableContainer.querySelector(this.config.assistiveText)
+
     // Add classes
     this.state.draggingElement.classList.add(this.config.draggingElementClass)
     this.state.sortableContainer.classList.add(this.config.draggingClass)
+
+    // Update assistive description
+    this.describe()
   }
 
   /**
@@ -106,6 +114,11 @@ export class Sortable {
 
     // Clear state
     this.state.draggingElement = null
+
+    // Update assistive description
+    this.describe()
+
+    // Clear state
     this.state.draggingIndex = undefined
     this.state.sortableContainer = null
     this.state.sortableList = null
@@ -128,6 +141,9 @@ export class Sortable {
 
     // Save new dragging index
     this.state.draggingIndex = this.getSortableIndex(this.state.draggingElement)
+
+    // Update assistive description
+    this.describe()
 
     // Fire onSort event
     this.config.onSort(this.state)
@@ -195,11 +211,28 @@ export class Sortable {
       if (focusable) focusable.focus()
     }
   }
+
+  /**
+   * Update assistive screen reader text
+   * @return {void}
+   */
+  describe () {
+    // Not dragging
+    if (!this.state.draggingElement) {
+      this.state.assistiveText.textContent = `Item dropped at position ${this.state.draggingIndex + 1}.`
+    }
+
+    // Describe dragging state
+    else {
+      this.state.assistiveText.textContent = `Item grabbed. Current position is ${this.state.draggingIndex + 1} of ${this.state.sortableList.children.length}. Use up or down arrows to change position, spacebar to drop.`
+    }
+  }
 }
 
 /**
  * Sortable configuration options
  * @typedef {Object} Options
+ * @property {string} assistiveText - Selector for assistive text element
  * @property {string} attr - Sortable item attribute name
  * @property {string} draggingClass - Class added to sortable container while dragging
  * @property {string} draggingElementClass - Class added to active sortable while dragging
@@ -210,6 +243,7 @@ export class Sortable {
 /**
  * Sortable component state
  * @typedef {Object} State
+ * @property {HTMLElement} assistiveText - Assistive text element for ARIA announcements
  * @property {HTMLElement} draggingElement - Sortable currently being dragged
  * @property {number} draggingIndex - Index of the current dragging sortable
  * @property {HTMLElement} list - Sortable item parent list
