@@ -2,6 +2,12 @@
 .sortable {
   border: 1px solid $lighter;
 
+  &.dragging {
+    ul {
+      cursor: grabbing;
+    }
+  }
+
   ul {
     cursor: grab;
     list-style: none;
@@ -20,6 +26,10 @@
           color: $primary;
           transform: scale(1.5);
         }
+      }
+
+      &.active-drag {
+        background-color: transparentize($primary, .5);
       }
     }
   }

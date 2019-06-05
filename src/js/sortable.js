@@ -11,6 +11,8 @@ export class Sortable {
      */
     this.config = Object.assign({
       attr: 'data-sortable',
+      draggingClass: 'dragging',
+      draggingElementClass: 'active-drag',
       onSort: (state) => {},
       sortableContainer: '.sortable',
     }, options)
@@ -63,6 +65,10 @@ export class Sortable {
 
     // Get sortable container
     this.state.sortableContainer = e.target.closest(this.config.sortableContainer)
+
+    // Add classes
+    this.state.draggingElement.classList.add(this.config.draggingElementClass)
+    this.state.sortableContainer.classList.add(this.config.draggingClass)
   }
 
   /**
@@ -93,6 +99,10 @@ export class Sortable {
    * @return {void}
    */
   end (e) {
+    // Remove classes
+    this.state.draggingElement.classList.remove(this.config.draggingElementClass)
+    this.state.sortableContainer.classList.remove(this.config.draggingClass)
+
     // Clear state
     this.state.draggingElement = null
     this.state.draggingIndex = undefined
@@ -142,6 +152,8 @@ export class Sortable {
  * Sortable configuration options
  * @typedef {Object} Options
  * @property {string} attr - Sortable item attribute name
+ * @property {string} draggingClass - Class added to sortable container while dragging
+ * @property {string} draggingElementClass - Class added to active sortable while dragging
  * @property {OnSort} onSort - Called each time sort order has changed
  * @property {string} sortableContainer - Selector for closest sortable container
  */
