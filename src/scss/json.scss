@@ -1,0 +1,20 @@
+// JSON output
+.json {
+  border: 1px solid darken($lighter, 5%);
+  color: inherit;
+  display: block;
+  font-family: monospace;
+  font-size: inherit;
+  height: 250px;
+  line-height: 1.6em;
+  padding: 1em;
+  resize: none;
+  transition: border-color $t ease, box-shadow $t ease;
+  width: 100%;
+
+  &:focus {
+    border-color: $primary;
+    box-shadow: 0 0 6px inset transparentize($primary, .5);
+    outline: none;
+  }
+}
