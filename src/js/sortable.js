@@ -32,6 +32,7 @@ export class Sortable {
      */
     this.state = {
       draggingElement: null,
+      draggingIndex: undefined,
       sortableContainer: null,
       sortableList: null,
     }
@@ -56,6 +57,9 @@ export class Sortable {
 
     // Save sortable list
     this.state.sortableList = e.target.parentElement
+
+    // Get dragging index
+    this.state.draggingIndex = this.getSortableIndex(e.target)
 
     // Get sortable container
     this.state.sortableContainer = e.target.closest(this.config.sortableContainer)
@@ -91,6 +95,7 @@ export class Sortable {
   end (e) {
     // Clear state
     this.state.draggingElement = null
+    this.state.draggingIndex = undefined
     this.state.sortableContainer = null
     this.state.sortableList = null
   }
@@ -101,11 +106,35 @@ export class Sortable {
    * @return {void}
    */
   sort (target) {
+    // Dragging updwards?
+    const draggingUpwards = this.getSortableIndex(target) < this.state.draggingIndex
+
     // Remove current draggable from <ul>
     this.state.sortableList.removeChild(this.state.draggingElement)
 
     // Add current draggable back <ul> at a different position (based on target)
-    this.state.draggingElement = target.insertAdjacentElement('afterend', this.state.draggingElement)
+    this.state.draggingElement = target.insertAdjacentElement(draggingUpwards ? 'beforebegin' : 'afterend', this.state.draggingElement)
+
+    // Save new dragging index
+    this.state.draggingIndex = this.getSortableIndex(this.state.draggingElement)
+  }
+
+  /**
+   * Get the given element sortable index
+   * @param {HTMLElement} el - Sortable list element
+   * @return {number}
+   */
+  getSortableIndex (el) {
+    // Not dragging
+    if (!this.state.sortableList) return
+
+    // Get element index
+    for (let i = 0; i < this.state.sortableList.children.length; i++) {
+      if (this.state.sortableList.children[i] === el) return i
+    }
+
+    // Not found
+    return 0
   }
 }
 
