@@ -127,6 +127,9 @@ export class Sortable {
 
     // Save new dragging index
     this.state.draggingIndex = this.getSortableIndex(this.state.draggingElement)
+
+    // Fire onSort event
+    this.config.onSort(this.state)
   }
 
   /**
